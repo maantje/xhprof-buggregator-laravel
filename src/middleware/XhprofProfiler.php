@@ -13,7 +13,7 @@ class XhprofProfiler
 
     public function __construct()
     {
-        if (!$this->isEnabled()) {
+        if (! $this->isEnabled()) {
             return;
         }
 
@@ -36,7 +36,6 @@ class XhprofProfiler
             $this->profiler->start();
         }
 
-
         return $next($request);
     }
 
@@ -45,7 +44,7 @@ class XhprofProfiler
      */
     public function terminate(Request $request, Response $response): void
     {
-        if (!$this->isEnabled()) {
+        if (! $this->isEnabled()) {
             return;
         }
 
