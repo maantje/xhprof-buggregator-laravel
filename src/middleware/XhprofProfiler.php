@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class XhprofProfiler
 {
+    public const HEADER = 'X-Xhprof-Enabled';
+
     public function __construct(private readonly Profiler $profiler)
     {
         //
