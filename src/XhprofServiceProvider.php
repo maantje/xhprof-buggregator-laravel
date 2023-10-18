@@ -16,7 +16,7 @@ class XhprofServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/xhprof.php', 'xhprof');
 
-        if (! config('xhprof.enabled')) {
+        if (! $this->isEnabled()) {
             return;
         }
 
@@ -61,5 +61,17 @@ class XhprofServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/xhprof.php' => config_path('xhprof.php'),
         ]);
+    }
+
+    /**
+     * Checks if the profiler should be enabled
+     */
+    private function isEnabled(): bool
+    {
+        if (request()->hasHeader(XhprofProfiler::HEADER)) {
+            return filter_var(request()->header(XhprofProfiler::HEADER), FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return config()->get('xhprof.enabled');
     }
 }
