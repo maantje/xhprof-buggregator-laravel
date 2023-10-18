@@ -1,6 +1,6 @@
 # Xhprof support in buggregator for Laravel
 
-Welcome to the Xhprof integration package for buggregator in Laravel. This repository allows you to effortlessly enable Xhprof support for buggregator in your Laravel application.
+Welcome to the Xhprof integration package for [buggregator](https://buggregator.dev/) in Laravel. This repository allows you to effortlessly enable Xhprof support for buggregator in your Laravel application.
 
 ## Installation
 
@@ -10,17 +10,6 @@ To get started, install the package via composer:
 composer require --dev maantje/xhprof-buggregator-laravel
 ```
 ## Usage
-
-Add the XhprofProfiler middleware to the middleware stack
-
-```php
-class Kernel {
-    protected $middleware = [
-        Maantje\XhprofBuggregatorLaravel\middleware\XhprofProfiler::class,
-        ...
-    ]
-}
-```
 
 Set the buggregator endpoint in your environment file:
 

@@ -9,20 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class XhprofProfiler
 {
-    private Profiler $profiler;
-
-    public function __construct()
+    public function __construct(private readonly Profiler $profiler)
     {
-        if (! $this->isEnabled()) {
-            return;
-        }
-
-        $this->profiler = app(Profiler::class);
-    }
-
-    private function isEnabled(): bool
-    {
-        return config('xhprof.enabled');
+        //
     }
 
     /**
@@ -32,9 +21,7 @@ class XhprofProfiler
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($this->isEnabled()) {
-            $this->profiler->start();
-        }
+        $this->profiler->start();
 
         return $next($request);
     }
@@ -44,10 +31,6 @@ class XhprofProfiler
      */
     public function terminate(Request $request, Response $response): void
     {
-        if (! $this->isEnabled()) {
-            return;
-        }
-
         $this->profiler->end();
     }
 }
