@@ -1,19 +1,43 @@
 <?php
 
+use Illuminate\Contracts\Http\Kernel;
+use Maantje\XhprofBuggregatorLaravel\middleware\XhprofProfiler;
 use Maantje\XhprofBuggregatorLaravel\XhprofServiceProvider;
-use SpiralPackages\Profiler\Profiler;
 
-it('can provider profiler', function () {
-    config()->set('xhprof.enabled', true);
+describe('enabled', function () {
+    beforeEach(function () {
+        config()->set('xhprof.enabled', true);
+    });
 
-    $provider = new XhprofServiceProvider(app());
+    it('registers middleware', function () {
+        $provider = new XhprofServiceProvider(app());
 
-    $provider->register();
+        $provider->register();
 
-    $profiler = app(Profiler::class);
+        /** @var \Illuminate\Foundation\Http\Kernel $kernel */
+        $kernel = app(Kernel::class);
 
-    expect()
-        ->toBeTrue(
-            is_a($profiler, Profiler::class)
-        );
+        expect(
+            $kernel->hasMiddleware(XhprofProfiler::class)
+        )->toBeTrue();
+    });
+});
+
+describe('disabled', function () {
+    beforeEach(function () {
+        config()->set('xhprof.enabled', false);
+    });
+
+    it('does not register middleware', function () {
+        $provider = new XhprofServiceProvider(app());
+
+        $provider->register();
+
+        /** @var \Illuminate\Foundation\Http\Kernel $kernel */
+        $kernel = app(Kernel::class);
+
+        expect(
+            $kernel->hasMiddleware(XhprofProfiler::class)
+        )->toBeFalse();
+    });
 });
