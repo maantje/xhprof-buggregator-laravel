@@ -39,10 +39,13 @@ class XhprofServiceProvider extends ServiceProvider
 
     /**
      * Registers the XhprofProfiler middleware
+     *
+     * @throws Throwable
      */
     protected function registerMiddleware(): void
     {
-        $kernel = $this->app[Kernel::class];
+        /** @var \Illuminate\Foundation\Http\Kernel $kernel */
+        $kernel = $this->app->get(Kernel::class);
 
         if (
             method_exists($kernel, 'hasMiddleware')
