@@ -9,6 +9,7 @@ use SpiralPackages\Profiler\DriverFactory;
 use SpiralPackages\Profiler\Profiler;
 use SpiralPackages\Profiler\Storage\WebStorage;
 use Symfony\Component\HttpClient\NativeHttpClient;
+use Throwable;
 
 class XhprofServiceProvider extends ServiceProvider
 {
@@ -72,6 +73,10 @@ class XhprofServiceProvider extends ServiceProvider
             return filter_var(request()->header(XhprofProfiler::HEADER), FILTER_VALIDATE_BOOLEAN);
         }
 
-        return config()->get('xhprof.enabled');
+        try {
+            return config()->get('xhprof.enabled');
+        } catch (Throwable) {
+            return false;
+        }
     }
 }
