@@ -8,7 +8,7 @@ use Maantje\XhprofBuggregatorLaravel\middleware\XhprofProfiler;
 use SpiralPackages\Profiler\DriverFactory;
 use SpiralPackages\Profiler\Profiler;
 use SpiralPackages\Profiler\Storage\WebStorage;
-use Symfony\Component\HttpClient\NativeHttpClient;
+use Symfony\Component\HttpClient\CurlHttpClient;
 use Throwable;
 
 class XhprofServiceProvider extends ServiceProvider
@@ -25,7 +25,7 @@ class XhprofServiceProvider extends ServiceProvider
 
         $this->app->bind(Profiler::class, function () {
             $storage = new WebStorage(
-                new NativeHttpClient(),
+                new CurlHttpClient(),
                 config('xhprof.endpoint'),
             );
 
