@@ -29,7 +29,7 @@ Alternatively, you can include the `X-Xhprof-Enabled` header in your request to 
 Enabled values: `true` `1` `on` `yes`  
 Disabled values: `false` `0` `off` `no`
 
-This feature works great with a browser extension like [ModHeader](https://addons.mozilla.org/en-US/firefox/addon/modheader-firefox/). It lets you switch profiling on and off right from your browser.
+This feature works great with a browser extension like [ModHeader](https://modheader.com/). It lets you switch profiling on and off right from your browser.
 
 ## Usage with Sail
 
