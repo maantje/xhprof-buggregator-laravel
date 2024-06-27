@@ -17,22 +17,25 @@ class XhprofServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/xhprof.php', 'xhprof');
 
-        if (! $this->isEnabled()) {
+        if (!$this->isEnabled()) {
             return;
         }
 
-        $this->registerMiddleware();
+        if ($this->onStartup()) {
+            $this->registerMiddleware();
+        }
+
 
         $this->app->bind(Profiler::class, function () {
             $storage = new WebStorage(
-                new CurlHttpClient(),
-                config('xhprof.endpoint'),
+                    new CurlHttpClient(),
+                    config('xhprof.endpoint'),
             );
 
             return new Profiler(
-                $storage,
-                DriverFactory::createXhrofDriver(),
-                config('app.name')
+                    $storage,
+                    DriverFactory::createXhrofDriver(),
+                    config('app.name')
             );
         });
     }
@@ -48,8 +51,8 @@ class XhprofServiceProvider extends ServiceProvider
         $kernel = $this->app->get(Kernel::class);
 
         if (
-            method_exists($kernel, 'hasMiddleware')
-            && $kernel->hasMiddleware(XhprofProfiler::class)
+                method_exists($kernel, 'hasMiddleware')
+                && $kernel->hasMiddleware(XhprofProfiler::class)
         ) {
             return;
         }
@@ -63,7 +66,7 @@ class XhprofServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__.'/../config/xhprof.php' => config_path('xhprof.php'),
+                __DIR__.'/../config/xhprof.php' => config_path('xhprof.php'),
         ]);
     }
 
@@ -78,6 +81,15 @@ class XhprofServiceProvider extends ServiceProvider
 
         try {
             return config()->get('xhprof.enabled');
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
+    private function onStartup(): bool
+    {
+        try {
+            return config()->get('xhprof.on_startup');
         } catch (Throwable) {
             return false;
         }
