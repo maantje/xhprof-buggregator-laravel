@@ -21,10 +21,9 @@ class XhprofServiceProvider extends ServiceProvider
             return;
         }
 
-        if ($this->onStartup()) {
+        if ($this->canRegisterMiddleware()) {
             $this->registerMiddleware();
         }
-
 
         $this->app->bind(Profiler::class, function () {
             $storage = new WebStorage(
@@ -86,12 +85,12 @@ class XhprofServiceProvider extends ServiceProvider
         }
     }
 
-    private function onStartup(): bool
+    private function canRegisterMiddleware(): bool
     {
         try {
-            return config()->get('xhprof.on_startup');
+            return config()->get('xhprof.register_middleware');
         } catch (Throwable) {
-            return false;
+            return true;
         }
     }
 }
