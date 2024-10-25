@@ -2,6 +2,13 @@
 
 Welcome to the Xhprof integration package for [buggregator](https://buggregator.dev/) in Laravel. This repository allows you to effortlessly enable Xhprof support for buggregator in your Laravel application.
 
+## Requirements
+
+Make sure that your server is configured with following PHP version and extensions:
+
+- PHP 8.1+
+- [XHProf](http://pecl.php.net/package/xhprof) ext or its fork [longxinH/xhprof](https://github.com/longxinH/xhprof).
+
 ## Installation
 
 To get started, install the package via composer:
