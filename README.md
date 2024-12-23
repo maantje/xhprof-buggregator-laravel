@@ -38,7 +38,47 @@ Disabled values: `false` `0` `off` `no`
 
 This feature works great with a browser extension like [ModHeader](https://modheader.com/). It lets you switch profiling on and off right from your browser.
 
-## Usage with Sail
+### Usage Profiler
+
+By default, the profiler is turned on and off with each HTTP request. 
+However, you may have other points where your\application starts. For example, it can be queues, commands, and so on.
+
+In such cases, you can configure the profiler to run in the desired location yourself:
+
+```php
+
+use SpiralPackages\Profiler\Profiler;
+
+class RegisterUserActionJob 
+{
+    public function __construct(
+        public string $name,
+        public string $password
+    ) {
+    }
+    
+    /**
+     * Get Profiler object from Container DI
+     * 
+     * @param Profiler $profiler
+     * @return void
+     */
+    public function handle(Profiler $profiler): void
+    {
+        try {
+            $profiler->start();
+            
+            // code for register new user
+        }
+        finally {
+            $profiler->end();
+        }
+    }
+}
+
+```
+
+### Usage with Sail
 
 Add the buggregator service to your docker-compose file:
 
