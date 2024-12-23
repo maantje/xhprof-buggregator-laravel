@@ -3,12 +3,11 @@
 namespace Maantje\XhprofBuggregatorLaravel;
 
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use Maantje\XhprofBuggregatorLaravel\middleware\XhprofProfiler;
-use SpiralPackages\Profiler\DriverFactory;
+use Maantje\XhprofBuggregatorLaravel\Factories\OptionalProfilerFactory;
+use Maantje\XhprofBuggregatorLaravel\Middleware\XhprofProfiler;
 use SpiralPackages\Profiler\Profiler;
-use SpiralPackages\Profiler\Storage\WebStorage;
-use Symfony\Component\HttpClient\CurlHttpClient;
 use Throwable;
 
 class XhprofServiceProvider extends ServiceProvider
@@ -17,26 +16,24 @@ class XhprofServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/xhprof.php', 'xhprof');
 
-        if (! $this->isEnabled()) {
-            return;
-        }
-
         if ($this->shouldRegisterMiddleware()) {
             $this->registerMiddleware();
         }
 
-        $this->app->bind(Profiler::class, function () {
-            $storage = new WebStorage(
-                new CurlHttpClient(),
-                config('xhprof.endpoint'),
-            );
-
-            return new Profiler(
-                $storage,
-                DriverFactory::createXhrofDriver(),
-                config('app.name')
-            );
+        $this->app->scoped(Profiler::class, function (Application $application) {
+            return (new OptionalProfilerFactory($application))
+                ->create();
         });
+    }
+
+    /**
+     * Bootstrap any package services.
+     */
+    public function boot(): void
+    {
+        $this->publishes([
+            __DIR__.'/../config/xhprof.php' => config_path('xhprof.php'),
+        ]);
     }
 
     /**
@@ -59,38 +56,8 @@ class XhprofServiceProvider extends ServiceProvider
         $kernel->prependMiddleware(XhprofProfiler::class);
     }
 
-    /**
-     * Bootstrap any package services.
-     */
-    public function boot(): void
-    {
-        $this->publishes([
-            __DIR__.'/../config/xhprof.php' => config_path('xhprof.php'),
-        ]);
-    }
-
-    /**
-     * Checks if the profiler should be enabled
-     */
-    private function isEnabled(): bool
-    {
-        if (request()->hasHeader(XhprofProfiler::HEADER)) {
-            return filter_var(request()->header(XhprofProfiler::HEADER), FILTER_VALIDATE_BOOLEAN);
-        }
-
-        try {
-            return config()->get('xhprof.enabled');
-        } catch (Throwable) {
-            return false;
-        }
-    }
-
     private function shouldRegisterMiddleware(): bool
     {
-        try {
-            return config()->get('xhprof.register_middleware');
-        } catch (Throwable) {
-            return true;
-        }
+        return config('xhprof.register_middleware');
     }
 }
