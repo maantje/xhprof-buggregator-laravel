@@ -1,6 +1,6 @@
 <?php
 
-namespace Maantje\XhprofBuggregatorLaravel\middleware;
+namespace Maantje\XhprofBuggregatorLaravel\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -11,10 +11,9 @@ class XhprofProfiler
 {
     public const HEADER = 'X-Xhprof-Enabled';
 
-    public function __construct(private readonly Profiler $profiler)
-    {
-        //
-    }
+    public function __construct(
+        private readonly Profiler $profiler
+    ) {}
 
     /**
      * Handle an incoming request.
