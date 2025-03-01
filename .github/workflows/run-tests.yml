@@ -43,7 +43,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer remove --dev pestphp/pest larastan/larastan laravel/pint --no-interaction
+          composer remove --dev larastan/larastan laravel/pint --no-interaction
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
