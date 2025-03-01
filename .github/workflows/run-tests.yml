@@ -9,16 +9,22 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.2, 8.3]
-        laravel: [10.*, 11.*]
+        php: [8.2, 8.3, 8.4]
+        laravel: [10.*, 11.*, 12.*]
         stability: [prefer-stable]
         include:
           - laravel: 10.*
             testbench: 8.*
             carbon: ^2.63
+            pest: ^2.36.0
           - laravel: 11.*
             testbench: 9.*
             carbon: ^2.72
+            pest: ^2.36.0
+          - laravel: 12.*
+            testbench: 10.*
+            carbon: ^3.8.4
+            pest: ^3.7.4
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -40,7 +46,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
+          composer remove --dev larastan/larastan laravel/pint --no-interaction
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" "pestphp/pest:${{ matrix.pest }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: List Installed Dependencies
