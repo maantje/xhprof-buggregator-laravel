@@ -1,0 +1,54 @@
+name: test-laravel
+
+on:
+  workflow_call:
+    inputs:
+      php:
+        required: true
+        type: string
+      laravel:
+        required: true
+        type: string
+      testbench:
+        required: true
+        type: string
+      carbon:
+        required: true
+        type: string
+      pest:
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    name: P${{ inputs.php }} - L${{ inputs.laravel }} - prefer-stable - ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ inputs.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo, xhprof
+          coverage: pcov
+
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Install dependencies
+        run: |
+          composer remove --dev larastan/larastan laravel/pint --no-interaction
+          composer require "laravel/framework:${{ inputs.laravel }}" "orchestra/testbench:${{ inputs.testbench }}" "nesbot/carbon:${{ inputs.carbon }}" "pestphp/pest:${{ inputs.pest }}" --no-interaction --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction
+
+      - name: List Installed Dependencies
+        run: composer show -D
+
+      - name: Execute tests
+        run: vendor/bin/pest --ci
