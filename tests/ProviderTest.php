@@ -23,7 +23,7 @@ describe('xhprof enabled', function () {
 
         $provider->register();
 
-        /** @var \Illuminate\Foundation\Http\Kernel $kernel */
+        /** @var Illuminate\Foundation\Http\Kernel $kernel */
         $kernel = app(Kernel::class);
 
         expect(

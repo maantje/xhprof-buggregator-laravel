@@ -20,7 +20,8 @@ final class ProfilerFactory
         return new Profiler(
             $this->makeStorage(),
             DriverFactory::createXhrofDriver(),
-            $this->configRepository->get('app.name')
+            $this->configRepository->get('app.name'),
+            ['env' => app()->environment()]
         );
     }
 

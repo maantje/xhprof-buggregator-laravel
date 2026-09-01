@@ -7,7 +7,7 @@ Welcome to the Xhprof integration package for [buggregator](https://buggregator.
 Make sure that your server is configured with following PHP version and extensions:
 
 - PHP 8.2+
-- Laravel 10, 11 or 12
+- Laravel 10, 11, 12 or 13
 - [XHProf](http://pecl.php.net/package/xhprof) ext or its fork [longxinH/xhprof](https://github.com/longxinH/xhprof).
 
 ## Installation

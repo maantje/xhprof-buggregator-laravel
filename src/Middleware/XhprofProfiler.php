@@ -32,6 +32,9 @@ class XhprofProfiler
      */
     public function terminate(Request $request, Response $response): void
     {
-        $this->profiler->end();
+        $this->profiler->end([
+            'method' => $request->method(),
+            'uri' => $request->path(),
+        ]);
     }
 }
